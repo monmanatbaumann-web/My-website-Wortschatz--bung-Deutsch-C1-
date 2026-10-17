@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C1 Deutsch & Thai Lern-App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans transition-colors duration-200">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-brand-600 to-indigo-500 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid me-0 fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">C1 Deutsch Meister</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">100 Gehobene Ausdrücke & Nomen-Verb-Verbindungen</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 border-t border-slate-100 dark:border-slate-700/50 overflow-x-auto custom-scrollbar">
+            <button onclick="switchTab('flashcards')" id="tab-flashcards" class="nav-tab py-3 px-3 sm:px-4 text-xs sm:text-sm font-semibold border-b-2 border-brand-600 text-brand-600 dark:text-brand-400 whitespace-nowrap flex items-center space-x-2">
+                <i class="fa-solid fa-clone"></i>
+                <span>Lernkarten (3D)</span>
+            </button>
+            <button onclick="switchTab('sentence')" id="tab-sentence" class="nav-tab py-3 px-3 sm:px-4 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap flex items-center space-x-2">
+                <i class="fa-solid fa-puzzle-piece"></i>
+                <span>Satzbeenden</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-tab py-3 px-3 sm:px-4 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap flex items-center space-x-2">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Quiz</span>
+            </button>
+            <button onclick="switchTab('matching')" id="tab-matching" class="nav-tab py-3 px-3 sm:px-4 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap flex items-center space-x-2">
+                <i class="fa-solid fa-object-group"></i>
+                <span>Zuordnung</span>
+            </button>
+            <button onclick="switchTab('catalog')" id="tab-catalog" class="nav-tab py-3 px-3 sm:px-4 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 whitespace-nowrap flex items-center space-x-2">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>Nachschlagewerk</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SECTION 1: 3D Flashcards -->
+        <section id="section-flashcards" class="tab-content block">
+            <div class="max-w-xl mx-auto flex flex-col items-center">
+                <!-- Controls bar -->
+                <div class="w-full flex justify-between items-center mb-4 bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <select id="flashcardCategory" onchange="filterFlashcards()" class="bg-slate-50 dark:bg-slate-700 text-xs sm:text-sm rounded-lg p-2 border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <option value="all">Alle C1 Ausdrücke (100)</option>
+                        <option value="alltag">Teil 1: C1 Alltag (50)</option>
+                        <option value="beruf">Teil 2: C1 Beruf & Verhandlung (50)</option>
+                    </select>
+                    <span id="flashcardCounter" class="text-xs font-semibold px-2.5 py-1 bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300 rounded-full">1 / 100</span>
+                </div>
+
+                <!-- 3D Card Container -->
+                <div class="w-full h-80 perspective-1000 cursor-pointer my-2" onclick="flipCard()">
+                    <div id="flashcard" class="relative w-full h-full duration-500 transform-style-3d shadow-xl rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <!-- Front side (German) -->
+                        <div class="absolute w-full h-full backface-hidden bg-white dark:bg-slate-800 rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+                            <span id="fcCategoryBadge" class="text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-slate-700 px-3 py-1 rounded-full uppercase tracking-wider">C1 Alltag</span>
+                            <div class="my-auto">
+                                <h2 id="fcGerman" class="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3">Etwas in Abrede stellen</h2>
+                                <p class="text-xs text-slate-400 dark:text-slate-500">Tippe zum Umdrehen <i class="fa-solid fa-rotate text-brand-500 ml-1"></i></p>
+                            </div>
+                            <button onclick="event.stopPropagation(); speakGerman()" class="p-3 bg-brand-50 hover:bg-brand-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-brand-600 dark:text-brand-300 rounded-full transition-all transform hover:scale-110">
+                                <i class="fa-solid fa-volume-high text-lg"></i>
+                            </button>
+                        </div>
+                        <!-- Back side (Thai & Romanization) -->
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-indigo-900 to-brand-900 text-white rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+                            <span class="text-xs font-semibold text-indigo-200 bg-white/10 px-3 py-1 rounded-full uppercase tracking-wider">Übersetzung</span>
+                            <div class="my-auto">
+                                <h3 id="fcThai" class="text-2xl sm:text-3xl font-bold mb-2">ปฏิเสธ / ไม่ยอมรับ</h3>
+                                <p id="fcRoman" class="text-sm font-medium text-indigo-200 italic">pa-ti-set / mai yom-rap</p>
+                            </div>
+                            <button onclick="event.stopPropagation(); speakThai()" class="p-3 bg-white/20 hover:bg-white/30 text-white rounded-full transition-all transform hover:scale-110">
+                                <i class="fa-solid fa-volume-high text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center w-full mt-6 space-x-4">
+                    <button onclick="prevCard()" class="flex-1 py-3 px-4 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Zurück</span>
+                    </button>
+                    <button onclick="randomCard()" class="p-3 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl transition-all" title="Zufällige Karte">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                    <button onclick="nextCard()" class="flex-1 py-3 px-4 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-md transition-all flex items-center justify-center space-x-2">
+                        <span>Nächste</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Spontanes Satzbeenden mit C1 Hilfswortschatz -->
+        <section id="section-sentence" class="tab-content hidden">
+            <div class="max-w-2xl mx-auto space-y-6">
+                <!-- Instruction Header -->
+                <div class="bg-gradient-to-r from-brand-600 to-indigo-600 text-white p-6 rounded-2xl shadow-md">
+                    <h2 class="text-xl font-bold mb-1"><i class="fa-solid fa-bolt mr-2"></i>Spontanes C1 Satzbeenden</h2>
+                    <p class="text-xs sm:text-sm opacity-90">Vollende den Satzanfang spontan mit dem angegebenen C1-Ausdruck. Nutze bei Bedarf den integrierten C1-Hilfswortschatz!</p>
+                </div>
+
+                <!-- Card container -->
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-4">
+                        <span id="scCategory" class="text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-slate-700 px-3 py-1 rounded-full">C1 ALLTAG</span>
+                        <button onclick="speakSentencePrompt()" class="text-brand-600 dark:text-brand-400 hover:text-brand-700 p-2">
+                            <i class="fa-solid fa-volume-high text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Target Ausdruck & Prompt -->
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Ziel-Ausdruck / Redewendung:</p>
+                        <h3 id="scTargetExpr" class="text-xl font-bold text-slate-800 dark:text-slate-100 text-brand-600 dark:text-brand-400">Etwas in Abrede stellen</h3>
+                        <p id="scThaiMeaning" class="text-sm text-slate-500 dark:text-slate-400 mt-1">ปฏิเสธ / ไม่ยอมรับ (pa-ti-set / mai yom-rap)</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Vorgegebener Satzanfang:</p>
+                        <p id="scPrompt" class="text-lg sm:text-xl font-medium text-slate-800 dark:text-slate-200 font-serif italic">"Der Politiker versuchte sofort, ..."</p>
+                    </div>
+
+                    <!-- Solution / Sample Sentence accordion -->
+                    <div id="scSampleBox" class="hidden p-4 bg-indigo-50 dark:bg-slate-700/50 border border-indigo-200 dark:border-slate-600 rounded-xl space-y-2">
+                        <p class="text-xs font-bold text-indigo-700 dark:text-indigo-300 uppercase">Musterbeispiel (C1):</p>
+                        <p id="scSampleText" class="text-base text-slate-800 dark:text-slate-100 font-medium">Der Politiker versuchte sofort, alle Korruptionsvorwürfe vehement in Abrede zu stellen.</p>
+                        <p id="scSampleThai" class="text-xs text-slate-500 dark:text-slate-400">นักการเมืองพยายามปฏิเสธข้อกล่าวหาทุจริตทั้งหมดอย่างทันท่วงที</p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button id="scShowBtn" onclick="toggleSentenceSample()" class="flex-1 py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-all">
+                            <i class="fa-solid fa-eye mr-2"></i>Musterlösung anzeigen
+                        </button>
+                        <button onclick="nextSentencePrompt()" class="flex-1 py-3 px-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md transition-all">
+                            Nächster Satzanfang <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- C1 Vocabulary & Connector Helper Box -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <button onclick="toggleHelperBox()" class="w-full p-4 flex justify-between items-center text-left font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">
+                        <span class="flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                            <span>C1 Hilfswortschatz & Konnektoren (Baukasten)</span>
+                        </span>
+                        <i id="helperIcon" class="fa-solid fa-chevron-down transition-transform duration-200"></i>
+                    </button>
+                    <div id="helperContent" class="hidden p-5 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 text-xs sm:text-sm space-y-4">
+                        <div>
+                            <h4 class="font-bold text-brand-600 dark:text-brand-400 mb-2">Gehobene Satzverbindungen (Konnektoren):</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div class="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"><span class="font-bold">obgleich / obschon</span> (+ Nebensatz): ถึงแม้ว่า</div>
+                                <div class="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"><span class="font-bold">insofern als...</span>: เท่าที่ / ในแง่ที่ว่า</div>
+                                <div class="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"><span class="font-bold">sodass / sodass wie...</span>: ส่งผลให้ / จนกระทั่ง</div>
+                                <div class="p-2 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"><span class="font-bold">stattdessen</span> (+ Inversion): แทนที่จะเป็นเช่นนั้น</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-600 dark:text-brand-400 mb-2">C1 Adverbien & Modifikatoren:</h4>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded font-medium">keineswegs (ไม่เลยแม้แต่น้อย)</span>
+                                <span class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded font-medium">vehement (อย่างรุนแรง/แข็งกร้าว)</span>
+                                <span class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded font-medium">ausnahmslos (โดยไม่มีข้อยกเว้น)</span>
+                                <span class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded font-medium">unverzüglich (โดยพลัน/ทันที)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Multiple-Choice Quiz -->
+        <section id="section-quiz" class="tab-content hidden">
+            <div class="max-w-2xl mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 p-6 sm:p-8 space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">C1 Wissenstest</h2>
+                        <p class="text-xs text-slate-500">Wähle die passende Bedeutung oder den richtigen Begriff</p>
+                    </div>
+                    <span id="quizScore" class="text-sm font-bold px-3 py-1 bg-brand-50 text-brand-600 dark:bg-slate-700 dark:text-brand-400 rounded-full">Punkte: 0 / 0</span>
+                </div>
+
+                <div id="quizQuestionBox" class="space-y-4">
+                    <p id="quizQuestion" class="text-lg font-semibold text-slate-800 dark:text-slate-200">Was bedeutet "Etwas in Abrede stellen"?</p>
+                    
+                    <div id="quizOptions" class="space-y-2.5">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <div id="quizFeedback" class="hidden p-4 rounded-xl text-center font-bold"></div>
+
+                <button id="quizNextBtn" onclick="nextQuizQuestion()" class="hidden w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md transition-all">
+                    Nächste Frage <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Interactive Matching Game -->
+        <section id="section-matching" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">Zuordnungsspiel</h2>
+                        <p class="text-xs text-slate-500">Klicke zuerst auf ein deutsches Wort und dann auf die passende Thai-Übersetzung</p>
+                    </div>
+                    <button onclick="initMatchingGame()" class="py-2 px-4 bg-brand-50 text-brand-600 hover:bg-brand-100 dark:bg-slate-700 dark:text-brand-300 font-semibold rounded-xl text-sm transition-all">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Neu starten
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- German Items -->
+                    <div id="matchGermanList" class="space-y-2">
+                        <!-- Items rendered via JS -->
+                    </div>
+                    <!-- Thai Items -->
+                    <div id="matchThaiList" class="space-y-2">
+                        <!-- Items rendered via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Searchable Reference Catalog -->
+        <section id="section-catalog" class="tab-content hidden">
+            <div class="space-y-6">
+                <!-- Search and Filter Bar -->
+                <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="catalogSearch" oninput="filterCatalog()" placeholder="Suchen (Deutsch, Thai, Pronunciation)..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div class="flex items-center space-x-2 w-full md:w-auto">
+                        <select id="catalogFilter" onchange="filterCatalog()" class="w-full md:w-auto bg-slate-50 dark:bg-slate-700 rounded-xl p-2.5 border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="all">Alle Kategorien (100)</option>
+                            <option value="alltag">Teil 1: C1 Alltag (50)</option>
+                            <option value="beruf">Teil 2: C1 Beruf & Verhandlung (50)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Catalog Grid -->
+                <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Cards generated dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 100 C1 VOCABULARY DATASET ---
+        const vocabData = [
+            // TEIL 1: ALLTAG (1-50)
+            { id: 1, cat: "alltag", de: "Etwas in Abrede stellen", th: "ปฏิเสธ / ไม่ยอมรับ", rom: "pa-ti-set / mai yom-rap", prompt: "Der Verdächtige versuchte sofort, ...", sampleDe: "Der Verdächtige versuchte sofort, die Beschuldigungen vehement in Abrede zu stellen.", sampleTh: "ผู้ต้องหาพยายามปฏิเสธข้อกล่าวหาโดยทันที" },
+            { id: 2, cat: "alltag", de: "Auf Granit stoßen", th: "เจอการต่อต้านอย่างหนัก", rom: "choe kan tor-tan yang nak", prompt: "Mit seinen neuen Reformvorschlägen ...", sampleDe: "Mit seinen neuen Reformvorschlägen ist der Direktor im Kollegium auf Granit gestoßen.", sampleTh: "ข้อเสนอปฏิรูปใหม่ของผอ. เจอการต่อต้านอย่างหนักจากคณะครู" },
+            { id: 3, cat: "alltag", de: "Aus der Luft gegriffen sein", th: "ไม่มีหลักฐาน / มโนขึ้นมา", rom: "mai mi lak-than / ma-no khuen ma", prompt: "Diese Anschuldigungen sind völlig ...", sampleDe: "Diese Anschuldigungen sind völlig aus der Luft gegriffen und entbehren jeder Grundlage.", sampleTh: "ข้อกล่าวหาเหล่านี้ไม่มีหลักฐานสิ้นเชิง" },
+            { id: 4, cat: "alltag", de: "Den Faden verlieren", th: "พูดแล้วหลุดประเด็น / ลืมเรื่องที่พูด", rom: "phut laeo lut pra-den / luem rueang thi phut", prompt: "Mitten im Vortrag habe ich leider ...", sampleDe: "Mitten im Vortrag habe ich leider kurz den Faden verloren.", sampleTh: "ขณะนำเสนอ ฉันดันหลุดประเด็นไปชั่วขณะ" },
+            { id: 5, cat: "alltag", de: "Ein Auge zudrücken", th: "ผ่อนผันให้ / ทำเป็นมองไม่เห็น", rom: "phon-phan hai / tham pen mong mai hen", prompt: "Bei diesem kleinen Fehler könnte der Chef ...", sampleDe: "Bei diesem kleinen Fehler könnte der Chef ausnahmsweise ein Auge zudrücken.", sampleTh: "สำหรับข้อผิดพลาดเล็กน้อยนี้ หัวหน้าอาจผ่อนผันให้เป็นกรณีพิเศษ" },
+            { id: 6, cat: "alltag", de: "In der Zwickmühle stecken", th: "ตกอยู่ในภาวะกลืนไม่เข้าคายไม่ออก", rom: "tok yu nai pha-wa khluen mai khao khai mai ok", prompt: "Ich stecke in einer echten ...", sampleDe: "Ich stecke in einer echten Zwickmühle, da ich beide Angebote gut finde.", sampleTh: "ฉันตกอยู่ในภาวะกลืนไม่เข้าคายไม่ออก เพราะชอบทั้งสองข้อเสนอ" },
+            { id: 7, cat: "alltag", de: "Klartext reden", th: "พูดตรงไปตรงมา / พูดไม่อ้อมค้อม", rom: "phut trong pai trong ma / phut mai om-khom", prompt: "Es wird Zeit, dass wir endlich ...", sampleDe: "Es wird Zeit, dass wir endlich Klartext reden.", sampleTh: "ถึงเวลาที่เราควรอะไรที่ตรงไปตรงมาเสียที" },
+            { id: 8, cat: "alltag", de: "Sich etwas durch den Kopf gehen lassen", th: "นำไปคิดทบทวนอย่างละเอียด", rom: "nam pai khit thop-thuan yang la-iat", prompt: "Lassen Sie sich das Angebot erst einmal ...", sampleDe: "Lassen Sie sich das Angebot erst einmal in Ruhe durch den Kopf gehen.", sampleTh: "ลองนำข้อเสนอนี้ไปคิดทบทวนอย่างละเอียดก่อน" },
+            { id: 9, cat: "alltag", de: "Sich nicht aus der Ruhe bringen lassen", th: "รักษาความสงบเยือกเย็น", rom: "rak-sa khwam sa-ngop yueak-yen", prompt: "Trotz des Stresses ließ er sich ...", sampleDe: "Trotz des Stresses ließ er sich keineswegs aus der Ruhe bringen.", sampleTh: "แม้จะมีความเครียด แต่เขาก็ยังรักษาความสงบเยือกเย็นได้" },
+            { id: 10, cat: "alltag", de: "Etwas auf die leichte Schulter nehmen", th: "ชะล่าใจ / ไม่เห็นความสำคัญ", rom: "cha-la-chai / mai hen khwam sam-khan", prompt: "Du solltest diese Prüfung auf keinen Fall ...", sampleDe: "Du solltest diese Prüfung auf keinen Fall auf die leichte Schulter nehmen.", sampleTh: "คุณไม่ควรชะล่าใจกับการสอบนี้เป็นอันขาด" },
+            { id: 11, cat: "alltag", de: "Den Bogen überspannen", th: "ทำเกินพอดี / ล้ำเส้นมากเกินไป", rom: "tham koen pho-di / lam sen mak koen pai", prompt: "Mit deinen ständigen Störungen hast du ...", sampleDe: "Mit deinen ständigen Störungen hast du den Bogen endgültig überspannt.", sampleTh: "การก่อกวนต่อเนื่องของคุณ ถือว่าล้ำเส้นเกินไปแล้ว" },
+            { id: 12, cat: "alltag", de: "In Vergessenheit geraten", th: "ถูกลืมเลือนไป", rom: "thuk luem-luean pai", prompt: "Alte Traditionen drohen oft, ...", sampleDe: "Alte Traditionen drohen oft, im Laufe der Zeit in Vergessenheit zu geraten.", sampleTh: "ธรรมเนียมเก่าแก่มักเสี่ยงต่อการถูกลืมเลือนไปตามกาลเวลา" },
+            { id: 13, cat: "alltag", de: "Sich ins Fäustchen lachen", th: "แอบหัวเราะชอบใจ", rom: "aep hua-ro chop-chai", prompt: "Als sein Konkurrent scheiterte, ...", sampleDe: "Als sein Konkurrent scheiterte, lachte er sich heimlich ins Fäustchen.", sampleTh: "เมื่อคู่แข่งของเขาล้มเหลว เขาจึงแอบหัวเราะชอบใจอยู่ในใจ" },
+            { id: 14, cat: "alltag", de: "Guten Gewissens sagen können", th: "พูดได้อย่างสบายใจ", rom: "phut dai yang sa-bai-chai", prompt: "Ich kann guten Gewissens behaupten, ...", sampleDe: "Ich kann guten Gewissens behaupten, mein Bestes gegeben zu haben.", sampleTh: "ฉันพูดได้อย่างสบายใจว่าฉันได้ทำเต็มที่แล้ว" },
+            { id: 15, cat: "alltag", de: "Sich der Stimme enthalten", th: "งดออกเสียง", rom: "ngot ok siang", prompt: "Bei der Abstimmung hat er sich ...", sampleDe: "Bei der Abstimmung hat er sich der Stimme enthalten.", sampleTh: "ในการลงมติเขางดออกเสียง" },
+            { id: 16, cat: "alltag", de: "Auf Nummer sicher gehen", th: "ทำเพื่อความชัวร์ / เน้นปลอดภัย", rom: "tham phuea khwam chua / nen plong-phai", prompt: "Um Fehler zu vermeiden, sollten wir ...", sampleDe: "Um Fehler zu vermeiden, sollten wir lieber auf Nummer sicher gehen.", sampleTh: "เพื่อเลี่ยงข้อผิดพลาด เราควรทำเพื่อความชัวร์ไว้ก่อน" },
+            { id: 17, cat: "alltag", de: "Mit offenen Karten spielen", th: "เปิดเผยความจริง / ไม่มีความลับ", rom: "poet-phoei khwam-ching / mai mi khwam-lap", prompt: "In einer Partnerschaft muss man ...", sampleDe: "In einer Partnerschaft muss man immer mit offenen Karten spielen.", sampleTh: "ในชีวิตคู่ เราต้องเปิดเผยความจริงต่อกันเสมอ" },
+            { id: 18, cat: "alltag", de: "Aus dem Rahmen fallen", th: "แตกต่างจากปกติ / แปลกแยก", rom: "taek-tang chak pok-ka-ti / plaek-yaek", prompt: "Ihre kreative Idee fällt positiv ...", sampleDe: "Ihre kreative Idee fällt positiv aus dem Rahmen.", sampleTh: "ไอเดียสร้างสรรค์ของเธอแตกต่างโดดเด่นจากปกติ" },
+            { id: 19, cat: "alltag", de: "Die Kirche im Dorf lassen", th: "อย่าทำเรื่องเล็กให้เป็นเรื่องใหญ่", rom: "ya tham rueang lek hai pen rueang yai", prompt: "Wir sollten jetzt nicht übertreiben und ...", sampleDe: "Wir sollten jetzt nicht übertreiben und lieber die Kirche im Dorf lassen.", sampleTh: "เราไม่ควรพูดเกินจริง และอย่าทำเรื่องเล็กให้เป็นเรื่องใหญ่" },
+            { id: 20, cat: "alltag", de: "Etwas in die Wege leiten", th: "เริ่มดำเนินการ", rom: "roem dam-noen-kan", prompt: "Die Behörden haben bereits alle Schritte ...", sampleDe: "Die Behörden haben bereits alle erforderlichen Schritte in die Wege geleitet.", sampleTh: "เจ้าหน้าที่ได้เริ่มดำเนินการขั้นตอนที่จำเป็นทั้งหมดแล้ว" },
+            { id: 21, cat: "alltag", de: "Unter die Lupe nehmen", th: "ตรวจสอบอย่างละเอียด", rom: "truat-sop yang la-iat", prompt: "Der Gutachter wird das Haus genauer ...", sampleDe: "Der Gutachter wird das Gebäude unter die Lupe nehmen.", sampleTh: "ผู้เชี่ยวชาญจะทำการตรวจสอบอาคารอย่างละเอียด" },
+            { id: 22, cat: "alltag", de: "In den sauren Apfel beißen", th: "จำใจทำสิ่งที่ไม่ชอบ", rom: "cham-chai tham sing thi mai chop", prompt: "Um das Projekt zu retten, müssen wir wohl ...", sampleDe: "Um das Projekt zu retten, müssen wir wohl in den sauren Apfel beißen.", sampleTh: "เพื่อรักษาโครงการนี้ เราคงต้องจำใจยอมทำในสิ่งที่ไม่อยากทำ" },
+            { id: 23, cat: "alltag", de: "Sich Dingen gewachsen zeigen", th: "สามารถรับมือกับสถานการณ์ได้", rom: "sa-mat rap-mue kap sa-tha-na-kan dai", prompt: "In der Krise hat sie sich der Situation ...", sampleDe: "In der Krise hat sie sich den Aufgaben vollkommen gewachsen gezeigt.", sampleTh: "ในช่วงวิกฤต เธอแสดงให้เห็นว่าสามารถรับมือกับงานได้อย่างสมบูรณ์แบบ" },
+            { id: 24, cat: "alltag", de: "Auf Messers Schneide stehen", th: "แขวนอยู่บนเส้นยาแดงผอดแปด", rom: "khwaen yu bon sen ya-daeng", prompt: "Der Erfolg des Unternehmens steht zurzeit ...", sampleDe: "Der Erfolg des Unternehmens steht zurzeit auf Messers Schneide.", sampleTh: "ความสำเร็จของบริษัทกำลังแขวนอยู่บนเส้นยาแดงผอดแปด" },
+            { id: 25, cat: "alltag", de: "Licht ins Dunkel bringen", th: "ไขข้อข้องใจ / ทำเรื่องคลุมเครือให้ชัดเจน", rom: "khai kho khong-chai / tham rueang khlum-khruea hai chat-chen", prompt: "Neue Beweise konnten endlich ...", sampleDe: "Neue Beweise konnten endlich Licht ins Dunkel bringen.", sampleTh: "หลักฐานใหม่ช่วยไขข้อข้องใจให้ชัดเจนขึ้นได้ในที่สุด" },
+            { id: 26, cat: "alltag", de: "Im Keim ersticken", th: "ตัดไฟแต่ต้นลม", rom: "tat fai tae ton-lom", prompt: "Man sollte Streitigkeiten möglichst ...", sampleDe: "Man sollte Streitigkeiten möglichst im Keim ersticken.", sampleTh: "ควรตัดไฟแต่ต้นลมเมื่อเกิดความขัดแย้ง" },
+            { id: 27, cat: "alltag", de: "Gegen den Strom schwimmen", th: "คิดหรือทำสวนทางกับคนส่วนใหญ่", rom: "khit rue tham suan thang kap khon suan-yai", prompt: "Er hatte schon immer den Mut, ...", sampleDe: "Er hatte schon immer den Mut, gegen den Strom zu schwimmen.", sampleTh: "เขามีความกล้าที่จะทำสวนทางกับคนส่วนใหญ่เสมอมา" },
+            { id: 28, cat: "alltag", de: "Ein Dorn im Auge sein", th: "เป็นขวาหนาม / สิ่งที่เคืองตา", rom: "pen khwan-nam / sing thi khueang ta", prompt: "Seine ständige Kritik ist dem Chef ...", sampleDe: "Seine ständige Kritik ist dem Chef schon lange ein Dorn im Auge.", sampleTh: "คำวิจารณ์อย่างต่อเนื่องของเขาเป็นก้างขวางคอหัวหน้ามานานแล้ว" },
+            { id: 29, cat: "alltag", de: "Reinen Tisch machen", th: "เคลียร์ปัญหาให้จบสิ้น", rom: "khlia pan-ha hai chop-sin", prompt: "Nach den Missverständnissen wollte sie ...", sampleDe: "Nach den Missverständnissen wollte sie endlich reinen Tisch machen.", sampleTh: "หลังจากเกิดความเข้าใจผิด เธอต้องการเคลียร์ทุกอย่างให้จบสิ้น" },
+            { id: 30, cat: "alltag", de: "Sich vor Augen halten", th: "ตระหนักไว้เสมอ", rom: "tra-nak wai sa-moe", prompt: "Man muss sich immer die Konsequenzen ...", sampleDe: "Man muss sich immer die Konsequenzen vor Augen halten.", sampleTh: "เราต้องตระหนักถึงผลลัพธ์ที่จะตามมาไว้เสมอ" },
+            { id: 31, cat: "alltag", de: "In Bedrängnis geraten", th: "ตกอยู่ในสถานการณ์ยากลำบาก", rom: "tok yu nai sa-tha-na-kan yak-lam-bak", prompt: "Durch unerwartete Kosten geriet die Firma ...", sampleDe: "Durch unerwartete Kosten geriet die Firma finanziell in Bedรäงnis.", sampleTh: "บริษัทตกอยู่ในสถานการณ์ทางการเงินที่ยากลำบากเพราะค่าใช้จ่ายไม่คาดคิด" },
+            { id: 32, cat: "alltag", de: "Den Kürzeren ziehen", th: "เป็นฝ่ายเสียเปรียบ / พ่ายแพ้", rom: "pen fai sia-priap / phai-phae", prompt: "In diesem Wettbewerb musste unser Team ...", sampleDe: "In diesem Wettbewerb musste unser Team leider den Kürzeren ziehen.", sampleTh: "ในการแข่งขันครั้งนี้ ทีมของเราต้องเป็นฝ่ายพ่ายแพ้ไป" },
+            { id: 33, cat: "alltag", de: "Sich ins Zeug legen", th: "ทุ่มเททำงานอย่างหนัก", rom: "thum-the tham-ngan yang nak", prompt: "Für das beste Ergebnis hat sich alle Mitarbeiter ...", sampleDe: "Für das beste Ergebnis haben sich alle mächtig ins Zeug gelegt.", sampleTh: "เพื่อให้ได้ผลลัพธ์ที่ดีที่สุด พนักงานทุกคนทุ่มเททำงานอย่างหนัก" },
+            { id: 34, cat: "alltag", de: "Viel Wind um etwas machen", th: "ทำเรื่องเล็กให้เป็นเรื่องใหญ่", rom: "tham rueang lek hai pen rueang yai", prompt: "Die Medien machten wieder einmal ...", sampleDe: "Die Medien machten wieder einmal viel Wind um nichts.", sampleTh: "สื่อทำเรื่องเล็กให้เป็นเรื่องใหญ่อีกครั้ง" },
+            { id: 35, cat: "alltag", de: "Auf der faulen Haut liegen", th: "ปล่อยตัวขี้เกียจ", rom: "ploi tua khi-kiat", prompt: "Anstatt zu lernen, lag er den ganzen Tag ...", sampleDe: "Anstatt zu lernen, lag er den ganzen Tag auf der faulen Haut.", sampleTh: "แทนที่จะอ่านหนังสือ เขากลับปล่อยตัวขี้เกียจทั้งวัน" },
+            { id: 36, cat: "alltag", de: "Jemandem auf die Schliche kommen", th: "จับผิด / รู้ทันกลโกง", rom: "chap-phit / ru-than klon-kong", prompt: "Die Polizei ist dem Betrüger ...", sampleDe: "Die Polizei ist dem Betrüger schließlich auf die Schliche gekommen.", sampleTh: "ในที่สุดตำรวจก็จับผิดและรู้ทันกลโกงของนักต้มตุ๋น" },
+            { id: 37, cat: "alltag", de: "Sich im Ton vergreifen", th: "พูดจาไม่สุภาพ / ใช้คำพูดไม่เหมาะสม", rom: "phut-cha mai su-phap / chai kham-phut mai hot-som", prompt: "In der Hitzköpfigkeit der Debatte hat er ...", sampleDe: "In der Debatte hat er sich gewaltig im Ton vergriffen.", sampleTh: "ในการโต้เถียง เขาใช้คำพูดที่ไม่เหมาะสมอย่างมาก" },
+            { id: 38, cat: "alltag", de: "Auf der Strecke bleiben", th: "ถูกทิ้งไว้ข้างหลัง / ไม่สำเร็จ", rom: "thuk thing wai khang-lang / mai sam-ret", prompt: "Bei der ganzen Hektik darf die Gesundheit nicht ...", sampleDe: "Bei der ganzen Hektik darf die Gesundheit nicht auf der Strecke bleiben.", sampleTh: "ท่ามกลางความเร่งรีบ สุขภาพจะต้องไม่ถูกละเลยทิ้งไว้ข้างหลัง" },
+            { id: 39, cat: "alltag", de: "Sich ein Herz fassen", th: "รวบรวมความกล้า", rom: "ruam-ruam khwam-kla", prompt: "Er fasste sich ein Herz und ...", sampleDe: "Er fasste sich ein Herz und sprach die Chefin direkt an.", sampleTh: "เขารวบรวมความกล้าและเข้าไปพูดคุยกับหัวหน้าโดยตรง" },
+            { id: 40, cat: "alltag", de: "Die Zähne zusammenbeißen", th: "อดทนอดกลั้น", rom: "ot-thon ot-klan", prompt: "Trotz der Schmerzen musste er ...", sampleDe: "Trotz der Schmerzen musste er die Zähne zusammenbeißen.", sampleTh: "แม้จะเจ็บปวด แต่เขาก็ต้องอดทนอดกลั้นไว้" },
+            { id: 41, cat: "alltag", de: "Den Tatsachen ins Auge sehen", th: "ยอมรับความจริง", rom: "yom-rap khwam-ching", prompt: "Wir müssen endlich der Realität und ...", sampleDe: "Wir müssen endlich den Tatsachen ins Auge sehen.", sampleTh: "เราต้องยอมรับความจริงที่เกิดขึ้นเสียที" },
+            { id: 42, cat: "alltag", de: "In Verzug geraten", th: "ล่าช้ากว่ากำหนด", rom: "la-cha kwa kam-not", prompt: "Durch den Streik ist die Lieferung ...", sampleDe: "Durch den Streik ist die Lieferung stark in Verzug geraten.", sampleTh: "การจัดส่งล่าช้ากว่ากำหนดอย่างมากเนื่องจากการประท้วง" },
+            { id: 43, cat: "alltag", de: "Aus der Haut fahren", th: "ฟิวส์ขาด / โกรธจัด", rom: "fiu khat / krot chat", prompt: "Bei solcher Ungerechtigkeit könnte ich ...", sampleDe: "Bei solcher Ungerechtigkeit könnte ich glatt aus der Haut fahren.", sampleTh: "เจอความไม่ยุติธรรมแบบนี้ ทำเอาฉันฟิวส์ขาดได้เลย" },
+            { id: 44, cat: "alltag", de: "Etwas ins Leben rufen", th: "ก่อตั้ง / ริเริ่มสร้างขึ้น", rom: "ko-tang / ri-roem sang khuen", prompt: "Die Organisation hat ein neues Projekt ...", sampleDe: "Die Organisation hat ein neues Hilfsprojekt ins Leben gerufen.", sampleTh: "องค์กรได้ริเริ่มโครงการช่วยเหลือใหม่ขึ้นมา" },
+            { id: 45, cat: "alltag", de: "Den Horizont erweitern", th: "เปิดโลกทัศน์", rom: "poet lok-ka-that", prompt: "Reisen hilft ungemein dabei, ...", sampleDe: "Reisen hilft ungemein dabei, den eigenen Horizont zu erweitern.", sampleTh: "การท่องเที่ยวช่วยเปิดโลกทัศน์ของเราได้อย่างมาก" },
+            { id: 46, cat: "alltag", de: "Auf eigenen Beinen stehen", th: "พึ่งพาตัวเองได้", rom: "phung-pha tua-eng dai", prompt: "Nach dem Studium wollte sie finanziell ...", sampleDe: "Nach dem Studium wollte sie endlich auf eigenen Beinen stehen.", sampleTh: "หลังเรียนจบ เธอต้องการพึ่งพาตัวเองทางการเงินให้ได้" },
+            { id: 47, cat: "alltag", de: "Sich in Grenzen halten", th: "อยู่ในขอบเขตที่รับได้", rom: "yu nai khop-khet thi rap dai", prompt: "Die Kosten für die Reparatur ...", sampleDe: "Die Kosten für die Reparatur hielten sich glücklicherweise in Grenzen.", sampleTh: "โชคดีที่ค่าซ่อมยังอยู่ในขอบเขตที่รับได้" },
+            { id: 48, cat: "alltag", de: "Stellung beziehen", th: "แสดงจุดยืนชัดเจน", rom: "sa-daeng chut-yuen chat-chen", prompt: "In politisch heiklen Fragen muss man ...", sampleDe: "In heiklen Fragen muss der Politiker klar Stellung beziehen.", sampleTh: "ในประเด็นที่ละเอียดอ่อน นักการเมืองต้องแสดงจุดยืนให้ชัดเจน" },
+            { id: 49, cat: "alltag", de: "Gefahr laufen", th: "สุ่มเสี่ยงที่จะ...", rom: "sum-siang thi cha...", prompt: "Wer nicht aufpasst, läuft Gefahr, ...", sampleDe: "Wer unvorsichtig ist, läuft Gefahr, alles zu verlieren.", sampleTh: "คนที่ประมาทสุ่มเสี่ยงที่จะสูญเสียทุกอย่าง" },
+            { id: 50, cat: "alltag", de: "Sich Vorwürfe machen", th: "ตำหนิตัวเอง", rom: "tam-ni tua-eng", prompt: "Du solltest dir nach dem Fehler nicht ...", sampleDe: "Du solltest dir wegen des Missgeschicks keine Vorwürfe machen.", sampleTh: "คุณไม่ควรตำหนิตัวเองเกี่ยวกับข้อผิดพลาดนั้น" },
+
+            // TEIL 2: BERUF & VERHANDLUNG (51-100)
+            { id: 51, cat: "beruf", de: "Abhilfe schaffen", th: "แก้ไขปัญหา / เยียวยาสถานการณ์", rom: "kae-khai pan-ha / yiao-ya sa-tha-na-kan", prompt: "Das Management versprach, umgehend ...", sampleDe: "Das Management versprach, bei den Engpässen umgehend Abhilfe zu schaffen.", sampleTh: "ผู้บริหารรับปากว่าจะเร่งแก้ไขปัญหากำลังคนขาดแคลนทันที" },
+            { id: 52, cat: "beruf", de: "In Anbetracht der Tatsachen", th: "เมื่อพิจารณาจากข้อเท็จจริง", rom: "muea phi-cha-ra-na chak kho-thet-ching", prompt: "In Anbetracht der aktuellen Wirtschaftslage müssen wir ...", sampleDe: "In Anbetracht der Tatsachen müssen wir das Budget kürzen.", sampleTh: "เมื่อพิจารณาจากข้อเท็จจริงแล้ว เราจำเป็นต้องลดงบประมาณ" },
+            { id: 53, cat: "beruf", de: "Ansprüche geltend machen", th: "เรียกร้องสิทธิ์", rom: "riak-rong sit", prompt: "Bei Ausfall des Fluges können Passagiere ...", sampleDe: "Bei Flugausfall können Kunden finanzielle Ansprüche geltend machen.", sampleTh: "หากเที่ยวบินถูกยกเลิก ผู้โดยสารสามารถเรียกร้องสิทธิ์ชดเชยได้" },
+            { id: 54, cat: "beruf", de: "Einen Kompromiss erzielen", th: "บรรลุข้อตกลงประนีประนอม", rom: "ban-lu kho-tok-long pra-ni-pra-nom", prompt: "Nach stundenlangen Verhandlungen konnten die Parteien ...", sampleDe: "Nach stundenlangen Verhandlungen konnten sie einen Kompromiss erzielen.", sampleTh: "หลังจากเจรจาหลายชั่วโมง พวกเขาสามารถบรรลุข้อตกลงประนีประนอมได้" },
+            { id: 55, cat: "beruf", de: "In Einklang bringen mit", th: "ทำให้สอดคล้องกับ", rom: "tham hai sot-khlong kap", prompt: "Wir müssen Beruf und Familie ...", sampleDe: "Wir müssen Karriere und Familie besser in Einklang bringen.", sampleTh: "เราต้องจัดสรรชีวิตการทำงานและครอบครัวให้สอดคล้องกันดียิ่งขึ้น" },
+            { id: 56, cat: "beruf", de: "Bedenken äußern", th: "แสดงความห่วงกังวล", rom: "sa-daeng khwam huang-kang-won", prompt: "Der Experte äußerte schwere ...", sampleDe: "Der Experte äußerte erhebliche Bedenken gegen das neue Gesetz.", sampleTh: "ผู้เชี่ยวชาญได้แสดงความห่วงกังวลอย่างมากต่อกฎหมายใหม่" },
+            { id: 57, cat: "beruf", de: "Ein Urteil fällen", th: "ตัดสิน / พิพากษา", rom: "tat-sin / phi-phak-sa", prompt: "Das Gericht wird voraussichtlich morgen ...", sampleDe: "Das Gericht wird voraussichtlich morgen das Urteil fällen.", sampleTh: "คาดว่าศาลจะอ่านคำตัดสินในวันพักนี้" },
+            { id: 58, cat: "beruf", de: "Maßnahmen ergreifen", th: "ดำเนินมาตรการ", rom: "dam-noen mat-tra-kan", prompt: "Die Regierung muss sofort strikte ...", sampleDe: "Die Regierung muss wirksame Maßnahmen zur Krisenbewältigung ergreifen.", sampleTh: "รัฐบาลต้องดำเนินมาตรการที่มีประสิทธิภาพเพื่อรับมือวิกฤต" },
+            { id: 59, cat: "beruf", de: "Stellung nehmen zu", th: "แสดงจุดยืน / ให้ความเห็นต่อ", rom: "sa-daeng chut-yuen / hai khwam-hen to", prompt: "Der Sprecher wollte zu den Gerüchten nicht ...", sampleDe: "Der Sprecher wollte zu den Gerüchten keine Stellung nehmen.", sampleTh: "โฆษกไม่อยากให้ความเห็นหรือแสดงจุดยืนต่อข่าวลือ" },
+            { id: 60, cat: "beruf", de: "Rücksicht nehmen auf", th: "คำนึงถึง / เกรงใจ", rom: "kham-nueng thung / kreng-chai", prompt: "Bei der Planung muss auf Anwohner ...", sampleDe: "Bei der Planung muss man Rücksicht auf die Anwohner nehmen.", sampleTh: "ในการวางแผน ต้องคำนึงถึงผู้อยู่อาศัยในบริเวณนั้นด้วย" },
+            { id: 61, cat: "beruf", de: "Unter Beweis stellen", th: "พิสูจน์ให้เห็น", rom: "phi-sut hai hen", prompt: "Im Projekt konnte er seine Kompetenz ...", sampleDe: "Er hat seine Fachkompetenz erneut unter Beweis gestellt.", sampleTh: "เขาได้พิสูจน์ความรู้ความสามารถเฉพาะทางให้เห็นอีกครั้ง" },
+            { id: 62, cat: "beruf", de: "Vorherrschend sein", th: "แพร่หลาย / มีอิทธิพลหลัก", rom: "phae-lai / mi it-thi-phon lak", prompt: "In der Branche ist große Unsicherheit ...", sampleDe: "In der Branche ist derzeit große Skepsis vorherrschend.", sampleTh: "ในอุตสาหกรรมนี้ ความเคลือบแคลงสงสัยกำลังแพร่หลายเป็นหลัก" },
+            { id: 63, cat: "beruf", de: "Einvernehmlich beschließen", th: "ลงมติเห็นพ้องต้องกัน", rom: "long ma-ti hen-phong tong-kan", prompt: "Die Vorstandsmitglieder haben die Änderung ...", sampleDe: "Der Vorstand hat die Satzungsänderung einvernehmlich beschlossen.", sampleTh: "คณะกรรมการลงมติเห็นพ้องต้องกันในการเปลี่ยนข้อบังคับ" },
+            { id: 64, cat: "beruf", de: "Zur Erwägung ziehen", th: "นำมาพิจารณาอย่างถี่ถ้วน", rom: "nam ma phi-cha-ra-na yang thi-thuan", prompt: "Wir sollten diese Option ernsthaft ...", sampleDe: "Wir sollten diese Alternative ernsthaft zur Erwägung ziehen.", sampleTh: "เราควรถือว่าทางเลือกนี้เป็นสิ่งที่ต้องนำมาพิจารณาอย่างจริงจัง" },
+            { id: 65, cat: "beruf", de: "Fristgemäß einreichen", th: "ยื่นตามกำหนดเวลา", rom: "yuen tam kam-not we-la", prompt: "Alle Dokumente müssen bis Freitag ...", sampleDe: "Die Unterlagen müssen fristgemäß eingereicht werden.", sampleTh: "เอกสารทั้งหมดต้องยื่นให้ทันตามกำหนดเวลา" },
+            { id: 66, cat: "beruf", de: "Rechtskraft erlangen", th: "มีผลบังคับใช้ทางกฎหมาย", rom: "mi phon bang-khap chai thang kot-mai", prompt: "Das Urteil wird erst nach vier Wochen ...", sampleDe: "Das Gerichtsurteil hat nun Rechtskraft erlangt.", sampleTh: "คำตัดสินของศาลมีผลบังคับใช้ทางกฎหมายแล้ว" },
+            { id: 67, cat: "beruf", de: "Vereinbarungen treffen", th: "ทำข้อตกลง", rom: "tham kho-tok-long", prompt: "Vor Vertragsabschluss müssen wir verbindliche ...", sampleDe: "Wir müssen klare Vereinbarungen bezüglich der Fristen treffen.", sampleTh: "เราต้องทำข้อตกลงที่ชัดเจนเกี่ยวกับกำหนดเวลา" },
+            { id: 68, cat: "beruf", de: "Sich zur Wehr setzen", th: "ปกป้องตัวเอง / ต่อสู้ขัดขวาง", rom: "pok-pong tua-eng / tor-su khat-khwang", prompt: "Gegen die unberechtigte Kündigung sollte er ...", sampleDe: "Gegen unberechtigte Vorwürfe muss man sich zur Wehr setzen.", sampleTh: "เราต้องปกป้องตัวเองจากการกล่าวหาที่ไม่เป็นธรรม" },
+            { id: 69, cat: "beruf", de: "Ausdrücklich betonen", th: "เน้นย้ำอย่างชัดเจน", rom: "nen-yam yang chat-chen", prompt: "Der Manager betonte noch einmal ...", sampleDe: "Der Manager hat die Dringlichkeit ausdrücklich betont.", sampleTh: "ผู้จัดการเน้นย้ำถึงความเร่งด่วนอย่างชัดเจน" },
+            { id: 70, cat: "beruf", de: "Vorzüge gegenüberstellen", th: "เปรียบเทียบข้อดี", rom: "priap-thiap kho-di", prompt: "In der Präsentation sollten wir die Angebote ...", sampleDe: "Wir sollten die Vorzüge beider Modelle direkt gegenüberstellen.", sampleTh: "เราควรนำข้อดีของทั้งสองโมเดลมาเปรียบเทียบกันโดยตรง" },
+            { id: 71, cat: "beruf", de: "Im Wesentlichen übereinstimmen", th: "มีความเห็นตรงกันเป็นส่วนใหญ่", rom: "mi khwam-hen trong kan pen suan-yai", prompt: "In den Hauptpunkten stimmen unsere Ansichten ...", sampleDe: "Unsere Vorschläge stimmen im Wesentlichen überein.", sampleTh: "ข้อเสนอของเรามีความเห็นตรงกันเป็นส่วนใหญ่" },
+            { id: 72, cat: "beruf", de: "Den Ausschlag geben", th: "เป็นปัจจัยชี้ขาด", rom: "pen pat-chai chi-khat", prompt: "Ausschlaggebend für den Vertrag war ...", sampleDe: "Der günstige Preis gab letztendlich den Ausschlag.", sampleTh: "ราคาที่ย่อมเยาเป็นปัจจัยชี้ขาดในท้ายที่สุด" },
+            { id: 73, cat: "beruf", de: "In Verhandlungen treten", th: "เริ่มการเจรจา", rom: "roem kan che-ra-cha", prompt: "Die Firmen wollen nächste Woche ...", sampleDe: "Die beiden Konzerne sind in Verhandlungen getreten.", sampleTh: "ทั้งสองบริษัทได้เริ่มเข้าสู่การเจรจาร่วมกันแล้ว" },
+            { id: 74, cat: "beruf", de: "Zur Kenntnis nehmen", th: "รับทราบข้อมูล", rom: "rap-thrap kho-mun", prompt: "Ich habe Ihre Beschwerde dankend ...", sampleDe: "Wir haben Ihre Anmerkungen zur Kenntnis genommen.", sampleTh: "พวกเราได้รับทราบข้อคิดเห็นของคุณเรียบร้อยแล้ว" },
+            { id: 75, cat: "beruf", de: "Auf Bedenken stoßen", th: "ประสบข้อทักท้วง / มีคนกังวล", rom: "pra-sop kho thak-thuang / mi khon kang-won", prompt: "Der neue Plan ist im Team auf ...", sampleDe: "Das Vorhaben stieß bei den Anlegern auf erhebliche Bedenken.", sampleTh: "โครงการนี้ประสบข้อทักท้วงและความกังวลจากผู้ลงทุนอย่างมาก" },
+            { id: 76, cat: "beruf", de: "In Augenschein nehmen", th: "เข้าตรวจดูสถานที่จริง / ตรวจสอบด้วยตา", rom: "khao truat-du sa-tha-na-thi ching", prompt: "Der Inspektor wird den Schaden vor Ort ...", sampleDe: "Der Gutachter wird den Schaden persönlich in Augenschein nehmen.", sampleTh: "ผู้เชี่ยวชาญจะเข้าตรวจดูความเสียหายด้วยตาตนเองในสถานที่จริง" },
+            { id: 77, cat: "beruf", de: "Sich der Verantwortung entziehen", th: "เลี่ยงความรับผิดชอบ", rom: "liang khwam-rap-phit-chop", prompt: "Bei Fehlern darf man sich nicht ...", sampleDe: "Man kann sich in dieser Krise nicht der Verantwortung entziehen.", sampleTh: "ในวิกฤตเช่นนี้ เราไม่สามารถเลี่ยงความรับผิดชอบได้" },
+            { id: 78, cat: "beruf", de: "Einen Konsens anstreben", th: "มุ่งสร้างความเห็นพ้อง", rom: "mung sang khwam hen-phong", prompt: "In der Konferenz wollen alle Beteiligten ...", sampleDe: "Alle Parteien streben einen nachhaltigen Konsens an.", sampleTh: "ทุกฝ่ายมุ่งสร้างความเห็นพ้องที่ยั่งยืนร่วมกัน" },
+            { id: 79, cat: "beruf", de: "Rechtsverbindlich festlegen", th: "กำหนดอย่างมีผลผูกพันทางกฎหมาย", rom: "kam-not yang mi phon phuk-phan thang kot-mai", prompt: "Die Klausel muss im Vertrag ...", sampleDe: "Diese Punkte müssen rechtsverbindlich festgelegt werden.", sampleTh: "ข้อบังคับเหล่านี้ต้องได้รับการกำหนดอย่างมีผลผูกพันทางกฎหมาย" },
+            { id: 80, cat: "beruf", de: "In Zweifel ziehen", th: "ตั้งข้อสงสัย", rom: "tang kho-song-sai", prompt: "Niemand möchte Ihre Fachkompetenz ...", sampleDe: "Ich möchte Ihre Ehrlichkeit keineswegs in Zweifel ziehen.", sampleTh: "ฉันไม่ได้ตั้งข้อสงสัยในความซื่อสัตย์ของคุณเลยแม้แต่น้อย" },
+            { id: 81, cat: "beruf", de: "Konsequenzen ziehen aus", th: "ถอดบทเรียน / รับผลที่ตามมา", rom: "thot bot-rian / rap phon thi tam ma", prompt: "Aus den Misserfolgen müssen wir harte ...", sampleDe: "Aus diesem Fehler müssen wir personelle Konsequenzen ziehen.", sampleTh: "จากข้อผิดพลาดนี้ เราจำเป็นต้องรับผลที่ตามมาในส่วนของตัวบุคคล" },
+            { id: 82, cat: "beruf", de: "Auf der Grundlage von", th: "บนพื้นฐานของ", rom: "bon phuen-than khong", prompt: "Entscheidungen treffen wir ausschließlich ...", sampleDe: "Wir entscheiden auf der Grundlage von Daten und Fakten.", sampleTh: "พวกเราตัดสินใจบนพื้นฐานของข้อมูลและข้อเท็จจริง" },
+            { id: 83, cat: "beruf", de: "Einen Antrag ablehnen", th: "ปฏิเสธคำร้อง", rom: "pa-ti-set kham-rong", prompt: "Die Behörde hat den Antrag aus Formfehlern ...", sampleDe: "Die Behörde musste den Antrag leider ablehnen.", sampleTh: "ทางหน่วยงานจำเป็นต้องปฏิเสธคำร้องเนื่องจากข้อผิดพลาดด้านรูปแบบ" },
+            { id: 84, cat: "beruf", de: "Nach reiflicher Überlegung", th: "หลังจากคิดไตร่ตรองอย่างรอบคอบ", rom: "lang-chak khit trai-trong yang rop-khop", prompt: "Nach reiflicher Überlegung bin ich zum Entschluss gekommen, ...", sampleDe: "Nach reiflicher Überlegung habe ich gekündigt.", sampleTh: "หลังจากคิดไตร่ตรองอย่างรอบคอบแล้ว ฉันจึงตัดสินใจลาออก" },
+            { id: 85, cat: "beruf", de: "Sich im Klaren sein über", th: "ตระหนักชัดเจนในเรื่อง...", rom: "tra-nak chat-chen nai rueang...", prompt: "Sie müssen sich über die Risiken ...", sampleDe: "Wir müssen uns über die finanziellen Risiken im Klaren sein.", sampleTh: "พวกเราต้องตระหนักถึงความเสี่ยงทางการเงินอย่างชัดเจน" },
+            { id: 86, cat: "beruf", de: "Synergieeffekte nutzen", th: "ใช้ประโยชน์จากการประสานพลัง", rom: "chai pra-yot chak kan pra-san pha-lang", prompt: "Durch die Fusion können beide Firmen ...", sampleDe: "Durch die Kooperation können wir wertvolle Synergieeffekte nutzen.", sampleTh: "การความร่วมมือช่วยให้เราใช้ประโยชน์จากการประสานพลังได้อย่างคุ้มค่า" },
+            { id: 87, cat: "beruf", de: "Einen Vorbehalt äußern", th: "แสดงข้อสงวนสิทธิ์ / ข้อกังวล", rom: "sa-daeng kho sa-nguan-sit", prompt: "Der Jurist äußerte rechtliche ...", sampleDe: "Der Anwalt äußerte Bedenken und Vorbehalte gegen die Klausel.", sampleTh: "ทนายความได้แสดงข้อสงวนสิทธิ์และข้อกังวลต่อข้อกำหนดดังกล่าว" },
+            { id: 88, cat: "beruf", de: "Ein Abkommen schließen", th: "เซ็นสัญญาข้อตกลง", rom: "sen san-ya kho-tok-long", prompt: "Die beiden Staaten haben ein neues Handelsabkommen ...", sampleDe: "Die Länder haben ein internationales Abkommen geschlossen.", sampleTh: "ประเทศเหล่านั้นได้เซ็นสัญญาข้อตกลงระหว่างประเทศร่วมกัน" },
+            { id: 89, cat: "beruf", de: "Ein hohes Risiko bergen", th: "แฝงไว้ด้วยความเสี่ยงสูง", rom: "faeng wai duai khwam-siang sung", prompt: "Dieses Investment birgt ein sehr ...", sampleDe: "Dieses finanzielle Projekt birgt ein extrem hohes Risiko.", sampleTh: "โครงการทางการเงินนี้แฝงไว้ด้วยความเสี่ยงที่สูงมาก" },
+            { id: 90, cat: "beruf", de: "Sich auf ein Minimum beschränken", th: "จำกัดให้อยู่ในระดับต่ำสุด", rom: "cham-kat hai yu nai ra-dap tam-sut", prompt: "Wir müssen die Nebenkosten auf ein ...", sampleDe: "Wir müssen die Ausgaben auf ein absolutes Minimum beschränken.", sampleTh: "เราต้องจำกัดค่าใช้จ่ายให้อยู่ในระดับต่ำที่สุดเท่าที่จะทำได้" },
+            { id: 91, cat: "beruf", de: "In Streitigkeiten geraten", th: "มีข้อพิพาท", rom: "mi kho-phi-phat", prompt: "Die Vertragspartner gerieten über die Kosten ...", sampleDe: "Die Parteien sind in rechtliche Streitigkeiten geraten.", sampleTh: "คู่สัญญาเกิดมีข้อพิพาททางกฎหมายระหว่างกัน" },
+            { id: 92, cat: "beruf", de: "Protokoll führen", th: "จดบันทึกการประชุม", rom: "jot ban-thuek kan pra-chum", prompt: "Wer wird heute während der Sitzung ...", sampleDe: "Frau Müller wird in der heutigen Sitzung Protokoll führen.", sampleTh: "คุณมุลเลอร์จะเป็นผู้จดบันทึกการประชุมในวันนี้" },
+            { id: 93, cat: "beruf", de: "Gewährleistung bieten", th: "ให้การรับประกัน", rom: "hai kan rap-pra-kan", prompt: "Der Hersteller bietet zwei Jahre ...", sampleDe: "Der Händler muss gesetzliche Gewährleistung bieten.", sampleTh: "ผู้ขายต้องให้การรับประกันสินค้าตามกฎหมาย" },
+            { id: 94, cat: "beruf", de: "Verbindlichkeiten eingehen", th: "สร้างข้อผูกพัน / มีหนี้สิน", rom: "sang kho-phuk-phan / mi ni-sin", prompt: "Ohne Absprache dürfen keine finanziellen ...", sampleDe: "Das Unternehmen sollte keine unnötigen Verbindlichkeiten eingehen.", sampleTh: "บริษัทไม่ควรสร้างข้อผูกพันทางการเงินที่ไม่จำเป็น" },
+            { id: 95, cat: "beruf", de: "Vorrang einräumen", th: "ให้ความสำคัญเป็นอันดับแรก", rom: "hai khwam-sam-khan pen an-dap raek", prompt: "Sicherheit muss im Betrieb immer ...", sampleDe: "Wir müssen der Qualität stets Vorrang einräumen.", sampleTh: "เราต้องให้ความสำคัญกับคุณภาพเป็นอันดับแรกเสมอ" },
+            { id: 96, cat: "beruf", de: "In Widerspruch stehen zu", th: "ขัดแย้งกับ", rom: "khat-yaeng kap", prompt: "Diese Tat steht in direktem ...", sampleDe: "Diese Handlung steht im Widerspruch zu unseren Werten.", sampleTh: "การกระทำนี้ขัดแย้งกับค่านิยมของพวกเราโดยตรง" },
+            { id: 97, cat: "beruf", de: "Einen Kompromiss aushandeln", th: "เจรจาต่อรองจนได้ข้อตกลง", rom: "che-ra-cha tor-rong chon dai kho-tok-long", prompt: "Den Diplomaten gelang es, einen tragfähigen ...", sampleDe: "Den Vertretern gelang es, einen fairen Kompromiss auszuhandeln.", sampleTh: "ตัวแทนประสบความสำเร็จในการเจรจาต่อรองจนได้ข้อตกลงที่เป็นธรรม" },
+            { id: 98, cat: "beruf", de: "Den Anforderungen entsprechen", th: "เป็นไปตามข้อกำหนด / สอดคล้องตามเกณฑ์", rom: "pen pai tam kho-kam-not", prompt: "Das Produkt entspricht allen Sicherheitsanforderungen ...", sampleDe: "Bewerber müssen den hohen Anforderungen entsprechen.", sampleTh: "ผู้สมัครต้องมีความรู้ความสามารถสอดคล้องตามเกณฑ์ที่กำหนดไว้สูง" },
+            { id: 99, cat: "beruf", de: "Außer Kraft setzen", th: "ยกเลิกมีผลบังคับใช้", rom: "yok-loek mi phon bang-khap chai", prompt: "Das neue Gesetz setzt die alte Verordnung ...", sampleDe: "Die neue Regelung setzt alte Beschlüsse außer Kraft.", sampleTh: "กฎระเบียบใหม่ยกเลิกการมีผลบังคับใช้ของมติเก่า" },
+            { id: 100, cat: "beruf", de: "Schadenersatz leisten", th: "ชดใช้ค่าเสียหาย", rom: "chot-chai kha sia-hai", prompt: "Bei Vertragsbruch muss die Firma ...", sampleDe: "Die Versicherung musste vollen Schadenersatz leisten.", sampleTh: "บริษัทประกันจำเป็นต้องชดใช้ค่าเสียหายเต็มจำนวน" }
+        ];
+
+        // Global State
+        let currentFilteredVocab = [...vocabData];
+        let fcIndex = 0;
+        let isFlipped = false;
+
+        // Sentence state
+        let currentScItem = null;
+
+        // Quiz state
+        let quizScoreCount = 0;
+        let quizTotalCount = 0;
+        let currentQuizItem = null;
+
+        // Matching state
+        let matchSelectedGerman = null;
+        let matchSelectedThai = null;
+        let matchedPairs = 0;
+
+        // Initialize App
+        window.onload = function() {
+            filterFlashcards();
+            nextSentencePrompt();
+            setupQuizQuestion();
+            initMatchingGame();
+            renderCatalog();
+        };
+
+        // --- THEME TOGGLE ---
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // --- TAB NAVIGATION ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                el.classList.remove('border-brand-600', 'text-brand-600', 'dark:text-brand-400', 'font-semibold');
+                el.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-medium');
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            activeTab.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-medium');
+            activeTab.classList.add('border-brand-600', 'text-brand-600', 'dark:text-brand-400', 'font-semibold');
+        }
+
+        // --- SPEECH SYNTHESIS ---
+        function speak(text, lang) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakGerman() {
+            if (currentFilteredVocab[fcIndex]) {
+                speak(currentFilteredVocab[fcIndex].de, 'de-DE');
+            }
+        }
+
+        function speakThai() {
+            if (currentFilteredVocab[fcIndex]) {
+                speak(currentFilteredVocab[fcIndex].th, 'th-TH');
+            }
+        }
+
+        // --- 3D FLASHCARD CONTROLLER ---
+        function filterFlashcards() {
+            const cat = document.getElementById('flashcardCategory').value;
+            if (cat === 'all') {
+                currentFilteredVocab = [...vocabData];
+            } else {
+                currentFilteredVocab = vocabData.filter(v => v.cat === cat);
+            }
+            fcIndex = 0;
+            updateFlashcardUI();
+        }
+
+        function updateFlashcardUI() {
+            if (isFlipped) flipCard();
+            
+            const item = currentFilteredVocab[fcIndex];
+            if (!item) return;
+
+            document.getElementById('fcCategoryBadge').innerText = item.cat === 'alltag' ? 'C1 ALLTAG' : 'C1 BERUF';
+            document.getElementById('fcGerman').innerText = item.de;
+            document.getElementById('fcThai').innerText = item.th;
+            document.getElementById('fcRoman').innerText = item.rom;
+            document.getElementById('flashcardCounter').innerText = `${fcIndex + 1} / ${currentFilteredVocab.length}`;
+        }
+
+        function flipCard() {
+            const card = document.getElementById('flashcard');
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                card.classList.add('rotate-y-180');
+            } else {
+                card.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            fcIndex = (fcIndex + 1) % currentFilteredVocab.length;
+            updateFlashcardUI();
+        }
+
+        function prevCard() {
+            fcIndex = (fcIndex - 1 + currentFilteredVocab.length) % currentFilteredVocab.length;
+            updateFlashcardUI();
+        }
+
+        function randomCard() {
+            fcIndex = Math.floor(Math.random() * currentFilteredVocab.length);
+            updateFlashcardUI();
+        }
+
+        // --- SENTENCE COMPLETION CONTROLLER ---
+        function nextSentencePrompt() {
+            const randomIndex = Math.floor(Math.random() * vocabData.length);
+            currentScItem = vocabData[randomIndex];
+
+            document.getElementById('scCategory').innerText = currentScItem.cat === 'alltag' ? 'C1 ALLTAG' : 'C1 BERUF';
+            document.getElementById('scTargetExpr').innerText = currentScItem.de;
+            document.getElementById('scThaiMeaning').innerText = `${currentScItem.th} (${currentScItem.rom})`;
+            document.getElementById('scPrompt').innerText = `"${currentScItem.prompt}"`;
+            document.getElementById('scSampleText').innerText = currentScItem.sampleDe;
+            document.getElementById('scSampleThai').innerText = currentScItem.sampleTh;
+
+            // Hide sample box
+            document.getElementById('scSampleBox').classList.add('hidden');
+            document.getElementById('scShowBtn').innerHTML = `<i class="fa-solid fa-eye mr-2"></i>Musterlösung anzeigen`;
+        }
+
+        function toggleSentenceSample() {
+            const box = document.getElementById('scSampleBox');
+            const btn = document.getElementById('scShowBtn');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btn.innerHTML = `<i class="fa-solid fa-eye-slash mr-2"></i>Musterlösung ausblenden`;
+            } else {
+                box.classList.add('hidden');
+                btn.innerHTML = `<i class="fa-solid fa-eye mr-2"></i>Musterlösung anzeigen`;
+            }
+        }
+
+        function speakSentencePrompt() {
+            if (currentScItem) {
+                speak(currentScItem.prompt, 'de-DE');
+            }
+        }
+
+        function toggleHelperBox() {
+            const content = document.getElementById('helperContent');
+            const icon = document.getElementById('helperIcon');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // --- QUIZ CONTROLLER ---
+        function setupQuizQuestion() {
+            const randomIndex = Math.floor(Math.random() * vocabData.length);
+            currentQuizItem = vocabData[randomIndex];
+
+            document.getElementById('quizQuestion').innerText = `Was bedeutet "${currentQuizItem.de}"?`;
+
+            // Pick 3 random wrong options
+            let options = [currentQuizItem];
+            while (options.length < 4) {
+                const randOption = vocabData[Math.floor(Math.random() * vocabData.length)];
+                if (!options.some(o => o.id === randOption.id)) {
+                    options.push(randOption);
+                }
+            }
+
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 hover:bg-brand-50 hover:border-brand-300 dark:hover:bg-slate-700 text-left font-medium text-slate-800 dark:text-slate-200 transition-all flex items-center justify-between";
+                btn.innerHTML = `<span>${opt.th} <span class="text-xs text-slate-400 block font-normal">${opt.rom}</span></span>`;
+                btn.onclick = () => checkQuizAnswer(opt.id, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quizFeedback').classList.add('hidden');
+            document.getElementById('quizNextBtn').classList.add('hidden');
+        }
+
+        function checkQuizAnswer(selectedId, btnElement) {
+            quizTotalCount++;
+            const allBtns = document.querySelectorAll('.quiz-opt-btn');
+            allBtns.forEach(b => b.onclick = null); // disable further clicks
+
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedId === currentQuizItem.id) {
+                quizScoreCount++;
+                btnElement.classList.add('bg-emerald-100', 'border-emerald-500', 'dark:bg-emerald-900/40', 'text-emerald-700', 'dark:text-emerald-300');
+                feedback.className = "p-4 rounded-xl text-center font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 border border-emerald-200";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>Richtig! Bravo!`;
+            } else {
+                btnElement.classList.add('bg-rose-100', 'border-rose-500', 'dark:bg-rose-900/40', 'text-rose-700', 'dark:text-rose-300');
+                feedback.className = "p-4 rounded-xl text-center font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300 border border-rose-200";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i>Falsch. Richtige Antwort: ${currentQuizItem.th}`;
+            }
+
+            document.getElementById('quizScore').innerText = `Punkte: ${quizScoreCount} / ${quizTotalCount}`;
+            document.getElementById('quizNextBtn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            setupQuizQuestion();
+        }
+
+        // --- MATCHING GAME CONTROLLER ---
+        function initMatchingGame() {
+            matchedPairs = 0;
+            matchSelectedGerman = null;
+            matchSelectedThai = null;
+
+            // Pick 5 random items
+            let gameItems = [...vocabData].sort(() => Math.random() - 0.5).slice(0, 5);
+            let germanItems = [...gameItems].sort(() => Math.random() - 0.5);
+            let thaiItems = [...gameItems].sort(() => Math.random() - 0.5);
+
+            const deContainer = document.getElementById('matchGermanList');
+            const thContainer = document.getElementById('matchThaiList');
+
+            deContainer.innerHTML = '';
+            thContainer.innerHTML = '';
+
+            germanItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "match-card p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm cursor-pointer hover:border-brand-500 transition-all shadow-sm";
+                div.dataset.id = item.id;
+                div.innerText = item.de;
+                div.onclick = () => selectMatchGerman(div, item.id);
+                deContainer.appendChild(div);
+            });
+
+            thaiItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "match-card p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm cursor-pointer hover:border-brand-500 transition-all shadow-sm";
+                div.dataset.id = item.id;
+                div.innerHTML = `${item.th} <span class="text-xs text-slate-400 block">${item.rom}</span>`;
+                div.onclick = () => selectMatchThai(div, item.id);
+                thContainer.appendChild(div);
+            });
+        }
+
+        function selectMatchGerman(el, id) {
+            if (el.classList.contains('opacity-40')) return;
+
+            document.querySelectorAll('#matchGermanList .match-card').forEach(c => {
+                c.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50', 'dark:bg-slate-700');
+            });
+
+            el.classList.add('ring-2', 'ring-brand-500', 'bg-brand-50', 'dark:bg-slate-700');
+            matchSelectedGerman = { el, id };
+
+            checkMatchPair();
+        }
+
+        function selectMatchThai(el, id) {
+            if (el.classList.contains('opacity-40')) return;
+
+            document.querySelectorAll('#matchThaiList .match-card').forEach(c => {
+                c.classList.remove('ring-2', 'ring-brand-500', 'bg-brand-50', 'dark:bg-slate-700');
+            });
+
+            el.classList.add('ring-2', 'ring-brand-500', 'bg-brand-50', 'dark:bg-slate-700');
+            matchSelectedThai = { el, id };
+
+            checkMatchPair();
+        }
+
+        function checkMatchPair() {
+            if (matchSelectedGerman && matchSelectedThai) {
+                if (matchSelectedGerman.id === matchSelectedThai.id) {
+                    // Match Success
+                    matchSelectedGerman.el.className = "p-3 sm:p-4 rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium text-sm opacity-40 cursor-default";
+                    matchSelectedThai.el.className = "p-3 sm:p-4 rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-medium text-sm opacity-40 cursor-default";
+
+                    matchedPairs++;
+                    if (matchedPairs === 5) {
+                        setTimeout(() => {
+                            alert("Hervorragend! Alle 5 Paare richtig zugeordnet!");
+                            initMatchingGame();
+                        }, 300);
+                    }
+                } else {
+                    // Match Fail - Reset selection highlight
+                    const gEl = matchSelectedGerman.el;
+                    const tEl = matchSelectedThai.el;
+
+                    gEl.classList.add('ring-2', 'ring-rose-500');
+                    tEl.classList.add('ring-2', 'ring-rose-500');
+
+                    setTimeout(() => {
+                        gEl.classList.remove('ring-2', 'ring-brand-500', 'ring-rose-500', 'bg-brand-50', 'dark:bg-slate-700');
+                        tEl.classList.remove('ring-2', 'ring-brand-500', 'ring-rose-500', 'bg-brand-50', 'dark:bg-slate-700');
+                    }, 400);
+                }
+
+                matchSelectedGerman = null;
+                matchSelectedThai = null;
+            }
+        }
+
+        // --- SEARCHABLE REFERENCE CATALOG CONTROLLER ---
+        function renderCatalog() {
+            filterCatalog();
+        }
+
+        function filterCatalog() {
+            const query = document.getElementById('catalogSearch').value.toLowerCase();
+            const cat = document.getElementById('catalogFilter').value;
+
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+
+            const filtered = vocabData.filter(item => {
+                const matchesCat = (cat === 'all' || item.cat === cat);
+                const matchesSearch = item.de.toLowerCase().includes(query) ||
+                                      item.th.toLowerCase().includes(query) ||
+                                      item.rom.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.cat === 'alltag' ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300' : 'bg-purple-50 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300'}">
+                                ${item.cat === 'alltag' ? 'C1 ALLTAG' : 'C1 BERUF'}
+                            </span>
+                            <span class="text-xs text-slate-400 font-semibold">#${item.id}</span>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-1">${item.de}</h3>
+                        <p class="text-sm font-semibold text-brand-600 dark:text-brand-400">${item.th}</p>
+                        <p class="text-xs text-slate-400 italic mb-3">${item.rom}</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex justify-between items-center">
+                        <button onclick="speak('${item.de.replace(/'/g, "\\'")}', 'de-DE')" class="text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 text-xs font-medium flex items-center space-x-1">
+                            <i class="fa-solid fa-volume-high"></i>
+                            <span>Aussprache</span>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
